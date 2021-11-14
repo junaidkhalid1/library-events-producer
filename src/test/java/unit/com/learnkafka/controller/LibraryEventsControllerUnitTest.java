@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(LibraryEventsController.class) //Use this annotation for unit tests for controller layer
@@ -46,12 +47,36 @@ public class LibraryEventsControllerUnitTest {
         String json = objectMapper.writeValueAsString(libraryEvent);
         doNothing().when(producer).sendLibraryEvent_Approach3(isA(LibraryEvent.class)); // As in controller class we're calling this method, but don't care about the response of this method that's why using doNothing
 
-        //when
+        //expect
         mockMvc.perform(post("/v1/libraryevent")
                 .content(json)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
+    }
 
-        //then
+    @Test
+    void postLibraryEvent_4xx() throws Exception {
+        //given
+        Book book = Book.builder()
+                .bookId(null)
+                .bookAuthor(null)
+                .bookName("Kafka using Spring Boot")
+                .build();
+
+        LibraryEvent libraryEvent = LibraryEvent.builder()
+                .libraryEventId(null)
+                .book(book)
+                .build();
+
+        String json = objectMapper.writeValueAsString(libraryEvent);
+        doNothing().when(producer).sendLibraryEvent_Approach3(isA(LibraryEvent.class)); // As in controller class we're calling this method, but don't care about the response of this method that's why using doNothing
+
+        //expect
+        String expectedErrorMessage = "book.bookAuthor - must not be blank, book.bookId - must not be null";
+        mockMvc.perform(post("/v1/libraryevent")
+                        .content(json)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().string(expectedErrorMessage));
     }
 }
