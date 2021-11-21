@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -45,7 +46,7 @@ public class LibraryEventsControllerUnitTest {
                 .build();
 
         String json = objectMapper.writeValueAsString(libraryEvent);
-        doNothing().when(producer).sendLibraryEvent_Approach3(isA(LibraryEvent.class)); // As in controller class we're calling this method, but don't care about the response of this method that's why using doNothing
+        when(producer.sendLibraryEvent_Approach3(isA(LibraryEvent.class))).thenReturn(null); // Null because controller is not going to use this
 
         //expect
         mockMvc.perform(post("/v1/libraryevent")
@@ -69,8 +70,7 @@ public class LibraryEventsControllerUnitTest {
                 .build();
 
         String json = objectMapper.writeValueAsString(libraryEvent);
-        doNothing().when(producer).sendLibraryEvent_Approach3(isA(LibraryEvent.class)); // As in controller class we're calling this method, but don't care about the response of this method that's why using doNothing
-
+        when(producer.sendLibraryEvent_Approach3(isA(LibraryEvent.class))).thenReturn(null); // Null because controller is not going to use this
         //expect
         String expectedErrorMessage = "book.bookAuthor - must not be blank, book.bookId - must not be null";
         mockMvc.perform(post("/v1/libraryevent")
