@@ -28,7 +28,7 @@ public class LibraryEventProducer {
     @Autowired
     ObjectMapper mapper;
 
-    String topic = "library-events";
+    String topic = "library-events-3";
 
     public void sendLibraryEvent(final LibraryEvent libraryEvent) throws JsonProcessingException {
         Integer key = libraryEvent.getLibraryEventId();
@@ -103,6 +103,6 @@ public class LibraryEventProducer {
     }
 
     private void handleSuccess(final Integer key, final String value, final SendResult<Integer, String> result) {
-        log.info("Message sent successfully for the key : {} and the value is {}, partition is {}", key,value,result.getRecordMetadata().partition());
+        log.info("Message sent successfully for the key : {} and the value is {}, partition is {}, topic is {}", key,value,result.getRecordMetadata().partition(),result.getRecordMetadata().topic());
     }
 }

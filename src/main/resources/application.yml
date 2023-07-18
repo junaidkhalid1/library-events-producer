@@ -6,9 +6,9 @@ spring:
   profiles: local
   kafka:
     template:
-      default-topic: library-events
+      default-topic: library-events-2
     producer:
-      bootstrap-servers: localhost:9092,localhost:9093,localhost:9094
+      bootstrap-servers: localhost:9093,localhost:9094,localhost:9095
       key-serializer: org.apache.kafka.common.serialization.IntegerSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
       properties:
@@ -16,7 +16,7 @@ spring:
         retries: 10
     admin:
       properties:
-        bootstrap.servers: localhost:9092,localhost:9093,localhost:9094
+        bootstrap.servers: localhost:9093,localhost:9094,localhost:9095
 ---
 spring:
   profiles: dev
